@@ -1,6 +1,3 @@
-server:
-  port: 0
-
 eureka:
   instance:
     hostname: localhost
@@ -15,6 +12,9 @@ spring:
     name: DANGER-ZONE-SERVICE
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://localhost:5433/opgmap_danger_zone
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB:opgmap_danger_zone}
+
+  liquibase:
+    change-log: classpath:changelog/changelog-master.yml
