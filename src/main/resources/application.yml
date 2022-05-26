@@ -18,3 +18,7 @@ spring:
 
   liquibase:
     change-log: classpath:changelog/changelog-master.yml
+
+  jpa:
+    hibernate:
+      ddl-auto: none
