@@ -1,1 +1,3 @@
 rootProject.name = 'opgmap_danger_zone_service'
+include 'liquibase'
+
