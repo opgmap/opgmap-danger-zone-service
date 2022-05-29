@@ -1,6 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "com.palantir.docker" version "0.22.1"
 	id 'java'
 }
 
@@ -14,10 +15,18 @@ configurations {
 	}
 }
 
+docker {
+	name "${project.name}:${project.version}"
+}
+
 repositories {
-	mavenCentral()
+	maven {
+		url 'http://localhost:7777/repository/maven-public/'
+		allowInsecureProtocol = true
+	}
 	maven { url 'https://repo.spring.io/snapshot' }
 	maven { url 'https://repo.spring.io/milestone' }
+	mavenCentral()
 }
 
 ext {
@@ -34,6 +43,7 @@ dependencies {
 	implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.7.0'
 
 	implementation project(':liquibase')
+	implementation 'ru.opgmap:opgmap-jwt-security-client:1.0.1-RELEASE'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
