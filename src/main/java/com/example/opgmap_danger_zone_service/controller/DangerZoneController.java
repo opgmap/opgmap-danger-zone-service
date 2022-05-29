@@ -63,8 +63,8 @@ public class DangerZoneController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDangerZoneById(@PathVariable UUID id) {
-        return dangerZoneService.deleteById(id);
+    public void deleteDangerZoneById(@PathVariable UUID id) {
+        dangerZoneService.deleteById(id);
     }
 
 }

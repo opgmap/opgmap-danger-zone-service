@@ -63,11 +63,10 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     }
 
     @Override
-    public String deleteById(UUID id) {
+    public void deleteById(UUID id) {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
-        dangerZoneRepository.deleteById(id);
-        return "Опасная зона была удалена";
+        dangerZoneRepository.delete(dangerZone);
     }
 }

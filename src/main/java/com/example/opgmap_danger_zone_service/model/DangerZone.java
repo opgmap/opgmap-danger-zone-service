@@ -19,8 +19,8 @@ public class DangerZone {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @Column(name = "position_x", nullable = false)
     private Double positionX;

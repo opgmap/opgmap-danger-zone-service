@@ -20,7 +20,7 @@ public class DangerZoneDto {
     private UUID id;
 
     @NotBlank
-    private String name;
+    private String description;
 
     @NotNull
     private Double positionX;
