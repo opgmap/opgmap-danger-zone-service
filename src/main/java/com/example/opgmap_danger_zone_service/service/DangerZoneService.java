@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public interface DangerZoneService {
 
-    UUID createDangerZone(DangerZoneDto dangerZoneDto);
+    UUID createDangerZone(UUID id, DangerZoneDto dangerZoneDto);
 
     DangerZoneDto getDangerZoneById(UUID id);
 
@@ -14,5 +14,5 @@ public interface DangerZoneService {
 
     DangerZoneDto updateDangerZone(UUID id, DangerZoneDto dangerZoneDto);
 
-    String deleteById(UUID id);
+    UUID deleteById(UUID id);
 }

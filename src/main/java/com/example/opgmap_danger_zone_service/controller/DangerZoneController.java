@@ -2,68 +2,58 @@ package com.example.opgmap_danger_zone_service.controller;
 
 import com.example.opgmap_danger_zone_service.dto.DangerZoneDto;
 import com.example.opgmap_danger_zone_service.service.DangerZoneService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.security.Principal;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/danger-zone/")
+@SecurityRequirement(name = "security_auth")
+@CrossOrigin("*")
 public class DangerZoneController {
-
-    private final RestTemplate restTemplate;
     private final DangerZoneService dangerZoneService;
 
     @GetMapping("/ping")
-    public ResponseEntity<String> ping(HttpServletRequest httpRequest) {
-        HttpHeaders headers = new HttpHeaders();
-        //headers.set("Authorization", httpRequest.getHeader("Authorization"));
-
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "http://DANGER-ZONE-SERVICE/api/v1/danger-zone/all", HttpMethod.GET, requestEntity, String.class);
-        return ResponseEntity.ok("Hello from Danger Zone controller - " + response.getBody());
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<?>> getAll(HttpServletRequest httpRequest) {
-        return ResponseEntity.ok(new ArrayList<>());
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("Danger zone service is alive");
     }
 
     @PostMapping
-    public UUID createDangerZone(@Valid @RequestBody DangerZoneDto dangerZoneDto) {
-        return dangerZoneService.createDangerZone(dangerZoneDto);
+    @PreAuthorize("isAuthenticated()")
+    public UUID createDangerZone(Principal principal,
+                                 @Valid @RequestBody DangerZoneDto dangerZoneDto) {
+        return dangerZoneService.createDangerZone(UUID.fromString(principal.getName()), dangerZoneDto);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public DangerZoneDto getDangerZoneById(@PathVariable UUID id) {
         return dangerZoneService.getDangerZoneById(id);
     }
 
     @PutMapping("/{id}/vote")
+    @PreAuthorize("isAuthenticated()")
     public UUID changeDangerZoneRating(@PathVariable UUID id, @RequestParam boolean vote){
         return dangerZoneService.changeDangerZoneRating(id, vote);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public DangerZoneDto updateDangerZone(@PathVariable UUID id, @RequestBody DangerZoneDto dangerZoneDto) {
         return dangerZoneService.updateDangerZone(id, dangerZoneDto);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDangerZoneById(@PathVariable UUID id) {
+    @PreAuthorize("isAuthenticated()")
+    public UUID deleteDangerZoneById(@PathVariable UUID id) {
         return dangerZoneService.deleteById(id);
     }
 
