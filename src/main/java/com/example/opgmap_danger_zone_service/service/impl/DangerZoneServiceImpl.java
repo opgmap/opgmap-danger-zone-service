@@ -23,12 +23,12 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     private final DangerZoneMapper dangerZoneMapper;
 
     @Override
-    public UUID createDangerZone(DangerZoneDto dangerZoneDto) {
+    public UUID createDangerZone(UUID userId, DangerZoneDto dangerZoneDto) {
         DangerZone dangerZone = dangerZoneMapper.fromDto(dangerZoneDto);
         dangerZone.setCreated(LocalDateTime.now());
+        dangerZone.setUserId(userId);
         dangerZone.setRating(0L);
-        dangerZoneRepository.save(dangerZone);
-        return dangerZone.getId();
+        return dangerZoneRepository.save(dangerZone).getId();
     }
 
     @Override
@@ -58,16 +58,19 @@ public class DangerZoneServiceImpl implements DangerZoneService {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
+
+        dangerZoneDto.setId(id);
+        dangerZoneDto.setUserId(dangerZone.getUserId());
         dangerZoneDto.setUpdated(LocalDateTime.now());
         return dangerZoneMapper.toDto(dangerZoneRepository.save(dangerZoneMapper.fromDto(dangerZoneDto)));
     }
 
     @Override
-    public String deleteById(UUID id) {
+    public UUID deleteById(UUID id) {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
-        dangerZoneRepository.deleteById(id);
-        return "Опасная зона была удалена";
+        dangerZoneRepository.delete(dangerZone);
+        return id;
     }
 }

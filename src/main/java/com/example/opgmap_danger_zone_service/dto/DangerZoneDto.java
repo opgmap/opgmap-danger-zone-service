@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,7 +27,6 @@ public class DangerZoneDto {
     @NotNull
     private Double positionY;
 
-    @NotNull
     private UUID userId;
 
     private LocalDateTime created;
