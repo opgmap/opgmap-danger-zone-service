@@ -5,22 +5,29 @@ import com.example.opgmap_danger_zone_service.exception.model.EntityNotExistsExc
 import com.example.opgmap_danger_zone_service.exception.utils.ExceptionMessagesGenerator;
 import com.example.opgmap_danger_zone_service.mapper.DangerZoneMapper;
 import com.example.opgmap_danger_zone_service.model.DangerZone;
+import com.example.opgmap_danger_zone_service.model.UserVote;
 import com.example.opgmap_danger_zone_service.repository.DangerZoneRepository;
 import com.example.opgmap_danger_zone_service.service.DangerZoneService;
+import com.example.opgmap_danger_zone_service.service.UserVoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class DangerZoneServiceImpl implements DangerZoneService {
 
     private static final String ENTITY_NAME = "Danger Zone";
 
     private final DangerZoneRepository dangerZoneRepository;
     private final DangerZoneMapper dangerZoneMapper;
+    private final UserVoteService userVoteService;
 
     @Override
     public UUID createDangerZone(UUID userId, DangerZoneDto dangerZoneDto) {
@@ -40,15 +47,36 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     }
 
     @Override
-    public UUID changeDangerZoneRating(UUID id, boolean vote) {
+    public UUID changeDangerZoneRating(UUID id, UUID userId, boolean vote) {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
-        if (vote) {
-            dangerZone.setRating(dangerZone.getRating() + 1);
+
+        // check the user has already voted
+        Optional<UserVote> userVoteOptional = userVoteService.findVote(id, userId);
+
+        if (userVoteOptional.isEmpty()) {
+            UserVote userVote = UserVote.builder()
+                    .userId(userId)
+                    .dangerZone(dangerZone)
+                    .value(vote)
+                    .created(LocalDateTime.now())
+                    .build();
+
+            dangerZone.setRating(dangerZone.getRating() + (vote ? 1 : -1));
+            userVoteService.saveVote(userVote);
         } else {
-            dangerZone.setRating(dangerZone.getRating() - 1);
+            UserVote userVote = userVoteOptional.get();
+            if (userVote.isValue() == vote) {
+                userVoteService.removeVote(userVote);
+                dangerZone.setRating(dangerZone.getRating() + (!vote ? 1 : -1));
+            } else {
+                userVote.setValue(vote);
+                dangerZone.setRating(dangerZone.getRating() + (vote ? 2 : -2));
+                userVoteService.updateVote(userVote);
+            }
         }
+
         dangerZoneRepository.save(dangerZone);
         return dangerZone.getId();
     }

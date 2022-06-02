@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: '2'
+      author: Dinar
+      changes:
+        - createTable:
+            tableName: user_vote
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: danger_zone_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: danger_zone_id
+                    referencedTableName: danger_zone
+                    referencedColumnNames: id
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: datetime
+                  constraints:
+                    nullable: false

@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: changelog/DDL/create-table-danger-zone.yml
+  - include:
+      file: changelog/DDL/create-table-user-vote.yml

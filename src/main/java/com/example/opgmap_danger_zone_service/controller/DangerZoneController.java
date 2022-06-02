@@ -41,8 +41,8 @@ public class DangerZoneController {
 
     @PutMapping("/{id}/vote")
     @PreAuthorize("isAuthenticated()")
-    public UUID changeDangerZoneRating(@PathVariable UUID id, @RequestParam boolean vote){
-        return dangerZoneService.changeDangerZoneRating(id, vote);
+    public UUID changeDangerZoneRating(Principal principal, @PathVariable UUID id, @RequestParam boolean vote){
+        return dangerZoneService.changeDangerZoneRating(id, UUID.fromString(principal.getName()), vote);
     }
 
     @PutMapping("/{id}")
