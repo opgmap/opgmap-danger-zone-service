@@ -10,7 +10,7 @@ public interface DangerZoneService {
 
     DangerZoneDto getDangerZoneById(UUID id);
 
-    UUID changeDangerZoneRating(UUID id, boolean vote);
+    UUID changeDangerZoneRating(UUID id, UUID userId, boolean vote);
 
     DangerZoneDto updateDangerZone(UUID id, DangerZoneDto dangerZoneDto);
 

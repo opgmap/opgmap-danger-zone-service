@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -39,4 +40,8 @@ public class DangerZone {
 
     @Column(name = "user_id", nullable = false)
     private UUID userId;
+
+    @OneToMany(mappedBy = "dangerZone")
+    private List<UserVote> userVote;
+
 }
