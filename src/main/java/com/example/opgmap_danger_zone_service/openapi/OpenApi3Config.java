@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(info = @Info(title = "${spring.application.name}", version = "1"))
 @SecurityScheme(name = "security_auth", type = SecuritySchemeType.OAUTH2,

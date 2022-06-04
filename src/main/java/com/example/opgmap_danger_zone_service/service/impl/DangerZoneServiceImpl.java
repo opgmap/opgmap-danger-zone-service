@@ -30,12 +30,12 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     private final UserVoteService userVoteService;
 
     @Override
-    public UUID createDangerZone(UUID userId, DangerZoneDto dangerZoneDto) {
+    public DangerZone createDangerZone(UUID userId, DangerZoneDto dangerZoneDto) {
         DangerZone dangerZone = dangerZoneMapper.fromDto(dangerZoneDto);
         dangerZone.setCreated(LocalDateTime.now());
         dangerZone.setUserId(userId);
         dangerZone.setRating(0L);
-        return dangerZoneRepository.save(dangerZone).getId();
+        return dangerZoneRepository.save(dangerZone);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     }
 
     @Override
-    public UUID changeDangerZoneRating(UUID id, UUID userId, boolean vote) {
+    public DangerZone changeDangerZoneRating(UUID id, UUID userId, boolean vote) {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
@@ -78,7 +78,7 @@ public class DangerZoneServiceImpl implements DangerZoneService {
         }
 
         dangerZoneRepository.save(dangerZone);
-        return dangerZone.getId();
+        return dangerZone;
     }
 
     @Override
