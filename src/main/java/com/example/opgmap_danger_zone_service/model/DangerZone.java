@@ -41,7 +41,7 @@ public class DangerZone {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @OneToMany(mappedBy = "dangerZone")
+    @OneToMany(mappedBy = "dangerZone", cascade = CascadeType.REMOVE)
     private List<UserVote> userVote;
 
 }

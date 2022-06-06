@@ -85,7 +85,7 @@ public class DangerZoneController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    public EntityModel<UUID> deleteDangerZoneById(@PathVariable UUID id) {
+    public EntityModel<DangerZoneDto> deleteDangerZoneById(@PathVariable UUID id) {
         return EntityModel.of(dangerZoneService.deleteById(id));
     }
 
