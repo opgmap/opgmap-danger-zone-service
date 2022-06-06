@@ -15,5 +15,5 @@ public interface DangerZoneService {
 
     DangerZoneDto updateDangerZone(UUID id, DangerZoneDto dangerZoneDto);
 
-    UUID deleteById(UUID id);
+    DangerZoneDto deleteById(UUID id);
 }

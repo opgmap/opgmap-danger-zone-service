@@ -13,6 +13,19 @@ eureka:
 
 spring:
 
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+          auto-create-topics: true
+          replication-factor: 1
+      bindings:
+        delete-out-0:
+          content-type: application/json
+          destination: dz-deleted
+
+
   application:
     name: DANGER-ZONE-SERVICE
 

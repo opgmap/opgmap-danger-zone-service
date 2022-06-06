@@ -3,6 +3,7 @@ package com.example.opgmap_danger_zone_service.service.impl;
 import com.example.opgmap_danger_zone_service.dto.DangerZoneDto;
 import com.example.opgmap_danger_zone_service.exception.model.EntityNotExistsException;
 import com.example.opgmap_danger_zone_service.exception.utils.ExceptionMessagesGenerator;
+import com.example.opgmap_danger_zone_service.kafka.services.KafkaProducer;
 import com.example.opgmap_danger_zone_service.mapper.DangerZoneMapper;
 import com.example.opgmap_danger_zone_service.model.DangerZone;
 import com.example.opgmap_danger_zone_service.model.UserVote;
@@ -24,6 +25,8 @@ import java.util.UUID;
 public class DangerZoneServiceImpl implements DangerZoneService {
 
     private static final String ENTITY_NAME = "Danger Zone";
+
+    private final KafkaProducer kafkaProducer;
 
     private final DangerZoneRepository dangerZoneRepository;
     private final DangerZoneMapper dangerZoneMapper;
@@ -94,11 +97,14 @@ public class DangerZoneServiceImpl implements DangerZoneService {
     }
 
     @Override
-    public UUID deleteById(UUID id) {
+    public DangerZoneDto deleteById(UUID id) {
         DangerZone dangerZone = dangerZoneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotExistsException(
                         ExceptionMessagesGenerator.generateNotFoundMessage(ENTITY_NAME, id)));
         dangerZoneRepository.delete(dangerZone);
-        return id;
+
+        // delete event
+        kafkaProducer.delete(id);
+        return dangerZoneMapper.toDto(dangerZone);
     }
 }
